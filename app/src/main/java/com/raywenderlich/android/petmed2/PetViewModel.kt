@@ -34,6 +34,8 @@ import com.raywenderlich.android.petmed2.model.Pet
 import com.raywenderlich.android.petmed2.model.Pets
 import org.simpleframework.xml.core.Persister
 import java.io.File
+import java.io.FileInputStream
+import java.io.ObjectInputStream
 
 class PetViewModel : ViewModel() {
 
@@ -49,7 +51,6 @@ class PetViewModel : ViewModel() {
 
   private fun loadPets(file: File, password: CharArray) {
 
-    /*
     var decrypted: ByteArray? = null
     ObjectInputStream(FileInputStream(file)).use { it ->
       val data = it.readObject()
@@ -70,7 +71,6 @@ class PetViewModel : ViewModel() {
     }
 
     if (decrypted != null) {
-    */
       val serializer = Persister()
       val inputStream = file.inputStream() //TODO: Replace me
       val pets = try { serializer.read(Pets::class.java, inputStream) } catch (e: Exception) {null}
