@@ -41,6 +41,7 @@ import java.io.FileOutputStream
 import java.io.ObjectOutputStream
 import java.text.DateFormat
 import java.util.*
+import android.util.Base64
 
 /**
  * Main Screen
@@ -120,13 +121,28 @@ class MainActivity : AppCompatActivity() {
   }
 
   private fun saveLastLoggedInTime() {
+//Get password
+    val password = CharArray(login_password.length())
+    login_password.text.getChars(0, login_password.length(), password, 0)
+
+//Base64 the data
     val currentDateTimeString = DateFormat.getDateTimeInstance().format(Date())
+// 1
+    val map =
+      Encryption().encrypt(currentDateTimeString.toByteArray(Charsets.UTF_8), password)
+// 2
+    val valueBase64String = Base64.encodeToString(map["encrypted"], Base64.NO_WRAP)
+    val saltBase64String = Base64.encodeToString(map["salt"], Base64.NO_WRAP)
+    val ivBase64String = Base64.encodeToString(map["iv"], Base64.NO_WRAP)
 
-    //Save to shared prefs
+//Save to shared prefs
     val editor = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE).edit()
-
-    editor.putString("l", currentDateTimeString)
+// 3
+    editor.putString("l", valueBase64String)
+    editor.putString("lsalt", saltBase64String)
+    editor.putString("liv", ivBase64String)
     editor.apply()
+
   }
 
   //This is just for demo data
