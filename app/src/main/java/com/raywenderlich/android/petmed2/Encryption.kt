@@ -73,7 +73,7 @@ internal class Encryption {
     map["salt"] = salt
     map["iv"] = iv
     map["encrypted"] = encryted
-    
+
     return map
   }
 
@@ -81,7 +81,21 @@ internal class Encryption {
 
     var decrypted: ByteArray? = null
 
-    //TODO: Add code here
+    val salt = map["salt"]
+    val iv = map["iv"]
+    val encrypted = map["encrypted"]
+
+  //regenerate key from password
+    val pbKeySpec = PBEKeySpec(password, salt, 1324, 256)
+    val secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1")
+    val keyBytes = secretKeyFactory.generateSecret(pbKeySpec).encoded
+    val keySpec = SecretKeySpec(keyBytes, "AES")
+
+  //Decrypt
+    val cipher = Cipher.getInstance("AES/CBC/PKCS7Padding")
+    val ivSpec = IvParameterSpec(iv)
+    cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec)
+    decrypted = cipher.doFinal(encrypted)
 
     return decrypted
   }
