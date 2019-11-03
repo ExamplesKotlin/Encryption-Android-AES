@@ -63,7 +63,7 @@ class PetViewModel : ViewModel() {
             val salt = data["salt"]
             val encrypted = data["encrypted"]
             if (iv is ByteArray && salt is ByteArray && encrypted is ByteArray) {
-              //TODO: Add decrypt call here
+              decrypted = Encryption().decrypt(hashMapOf("iv" to iv, "salt" to salt, "encrypted" to encrypted), password)
             }
           }
         }
