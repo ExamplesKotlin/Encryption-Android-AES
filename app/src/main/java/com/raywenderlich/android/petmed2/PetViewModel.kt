@@ -33,6 +33,7 @@ import android.arch.lifecycle.ViewModel
 import com.raywenderlich.android.petmed2.model.Pet
 import com.raywenderlich.android.petmed2.model.Pets
 import org.simpleframework.xml.core.Persister
+import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.ObjectInputStream
@@ -72,11 +73,11 @@ class PetViewModel : ViewModel() {
 
     if (decrypted != null) {
       val serializer = Persister()
-      val inputStream = file.inputStream() //TODO: Replace me
+      val inputStream = ByteArrayInputStream(decrypted)
       val pets = try { serializer.read(Pets::class.java, inputStream) } catch (e: Exception) {null}
       pets?.list?.let {
         this.pets = ArrayList(it)
       }
-    /*} */
+    }
   }
 }
