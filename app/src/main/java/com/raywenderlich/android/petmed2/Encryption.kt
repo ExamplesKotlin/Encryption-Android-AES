@@ -61,6 +61,11 @@ internal class Encryption {
     val keyBytes = secretKeyFactory.generateSecret(pbKeySpec).encoded
     val keySpec = SecretKeySpec(keyBytes, "AES")
 
+    val ivRandom = SecureRandom()
+    val iv = ByteArray(16)
+    ivRandom.nextBytes(iv)
+    val ivSpec = IvParameterSpec(iv)
+
     return map
   }
 
