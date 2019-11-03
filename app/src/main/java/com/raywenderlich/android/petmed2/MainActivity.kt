@@ -114,10 +114,34 @@ class MainActivity : AppCompatActivity() {
   }
 
   private fun lastLoggedIn(): String? {
-    //Retrieve shared prefs data
-    val preferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+//Get password
+    val password = CharArray(login_password.length())
+    login_password.text.getChars(0, login_password.length(), password, 0)
 
-    return preferences.getString("l", "")
+//Retrieve shared prefs data
+// 1
+    val preferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+    val base64Encrypted = preferences.getString("l", "")
+    val base64Salt = preferences.getString("lsalt", "")
+    val base64Iv = preferences.getString("liv", "")
+
+//Base64 decode
+// 2
+    val encrypted = Base64.decode(base64Encrypted, Base64.NO_WRAP)
+    val iv = Base64.decode(base64Iv, Base64.NO_WRAP)
+    val salt = Base64.decode(base64Salt, Base64.NO_WRAP)
+
+//Decrypt
+// 3
+    val decrypted = Encryption().decrypt(
+      hashMapOf("iv" to iv, "salt" to salt, "encrypted" to encrypted), password)
+
+    var lastLoggedIn: String? = null
+    decrypted?.let {
+      lastLoggedIn = String(it, Charsets.UTF_8)
+    }
+    return lastLoggedIn
+
   }
 
   private fun saveLastLoggedInTime() {
