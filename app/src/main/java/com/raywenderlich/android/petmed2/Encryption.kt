@@ -56,6 +56,11 @@ internal class Encryption {
     val salt = ByteArray(256)
     random.nextBytes(salt)
 
+    val pbKeySpec = PBEKeySpec(password, salt, 1324, 256)
+    val secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1")
+    val keyBytes = secretKeyFactory.generateSecret(pbKeySpec).encoded
+    val keySpec = SecretKeySpec(keyBytes, "AES")
+
     return map
   }
 
